@@ -32,6 +32,13 @@
 			</includes>
 		</fileSet>
 		<fileSet>
+			<directory>hotfiles</directory>
+			<outputDirectory>hotfiles</outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>testJar</directory>
 			<outputDirectory></outputDirectory>
 			<includes>

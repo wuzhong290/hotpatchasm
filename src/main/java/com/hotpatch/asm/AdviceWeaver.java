@@ -4,8 +4,6 @@ import org.apache.log4j.Logger;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
-import org.objectweb.asm.commons.*;
 
 /**
  * Created by wuzhong on 2017/11/2.
@@ -24,31 +22,37 @@ public class AdviceWeaver  extends ClassVisitor implements Opcodes {
             return mv;
         }
         logger.info("visitMethod name:"+name);
-        return new AdviceAdapter(ASM5, new JSRInlinerAdapter(mv, access, name, desc, signature, exceptions), access, name, desc){
-            private final Type ASM_TYPE_SPY = Type.getType("Lcom/hotpatch/asm/Spy;");
-            private final Type ASM_TYPE_METHOD = Type.getType(java.lang.reflect.Method.class);
-            private final Method ASM_METHOD_METHOD_INVOKE = Method.getMethod("Object invoke(Object,Object[])");
-            @Override
-            public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-                logger.info("visitMethodInsn begin name:"+name);
-                super.visitMethodInsn(opcode, owner, name, desc, itf);
-                logger.info("visitMethodInsn end name:"+name);
-            }
-
-            @Override
-            protected void onMethodEnter() {
-            }
-            @Override
-            protected void onMethodExit(int opcode) {
-            }
-
-            /**
-             * 加载通知方法
-             */
-            private void loadAdviceMethod() {
-                getStatic(ASM_TYPE_SPY, "ON_ASM_METHOD", ASM_TYPE_METHOD);
-            }
-        };
+        if (name.equals("getNumber")) {
+            mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(J)V");
+        }
+        return mv;
+//        return new AdviceAdapter(ASM5, new JSRInlinerAdapter(mv, access, name, desc, signature, exceptions), access, name, desc){
+//            private final Type ASM_TYPE_SPY = Type.getType("Lcom/hotpatch/asm/Spy;");
+//            private final Type ASM_TYPE_METHOD = Type.getType(java.lang.reflect.Method.class);
+//            private final Method ASM_METHOD_METHOD_INVOKE = Method.getMethod("Object invoke(Object,Object[])");
+//            @Override
+//            public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+//                logger.info("visitMethodInsn begin name:"+name);
+//                super.visitMethodInsn(opcode, owner, name, desc, itf);
+//                logger.info("visitMethodInsn end name:"+name);
+//            }
+//
+//            @Override
+//            protected void onMethodEnter() {
+//            }
+//            @Override
+//            protected void onMethodExit(int opcode) {
+//            }
+//
+//            /**
+//             * 加载通知方法
+//             */
+//            private void loadAdviceMethod() {
+//                getStatic(ASM_TYPE_SPY, "ON_ASM_METHOD", ASM_TYPE_METHOD);
+//            }
+//        };
     }
 
     /**

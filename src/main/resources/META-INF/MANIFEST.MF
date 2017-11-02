@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Premain-Class: com.hotpatch.trans.AgentMain
+Premain-Class: com.hotpatch.asm.AgentLauncher
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true

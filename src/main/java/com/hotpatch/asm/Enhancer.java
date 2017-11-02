@@ -13,7 +13,6 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.ProtectionDomain;
 
-import static org.objectweb.asm.ClassReader.EXPAND_FRAMES;
 import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
 import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 
@@ -41,7 +40,7 @@ public class Enhancer extends ClassLoader implements ClassFileTransformer {
             // 字节码增强
             final ClassWriter cw = new ClassWriter(cr, COMPUTE_FRAMES | COMPUTE_MAXS);
             // 生成增强字节码
-            cr.accept(new AdviceWeaver(cw), EXPAND_FRAMES);
+            cr.accept(new AdviceWeaver(cw), 0);//EXPAND_FRAMES
             byte[] enhanceClassByteArray = cw.toByteArray();
             if(null != enhanceClassByteArray){
                 Class<?> appClass=this.defineClass(null, enhanceClassByteArray, 0,enhanceClassByteArray.length);

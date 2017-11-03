@@ -20,8 +20,8 @@ public class AdviceWeaver  extends ClassVisitor implements Opcodes {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
         if (name.equals("getNumber")) {
             mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(J)V");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(J)V", false);
         }
         return mv;
     }

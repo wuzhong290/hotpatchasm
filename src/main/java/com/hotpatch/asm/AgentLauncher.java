@@ -15,6 +15,5 @@ public class AgentLauncher {
 //                new HotPatchASMThread(inst), 5, 50, TimeUnit.SECONDS);
         inst.addTransformer(new Enhancer(), true);
         System.out.println("Agent Main Done");
-        logger.info("hotPatch starting...");
     }
 }

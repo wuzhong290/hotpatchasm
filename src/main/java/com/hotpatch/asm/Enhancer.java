@@ -1,13 +1,10 @@
 package com.hotpatch.asm;
 
-import com.hotpatch.FileUtil;
-import com.hotpatch.HotPatch;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
-import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.reflect.InvocationTargetException;
@@ -29,11 +26,7 @@ public class Enhancer extends ClassLoader implements ClassFileTransformer {
         }
         final ClassReader cr;
         try {
-            byte[] array = FileUtil.getBytesFromFile(HotPatch.ROOT_PATH + File.separator+"TClass.class");
-            if(null != array){
-                logger.info("array:"+array.length);
-            }
-            cr = new ClassReader(array);
+            cr = new ClassReader(classfileBuffer);
             // 字节码增强
             ClassWriter cw=new ClassWriter(ClassWriter.COMPUTE_MAXS);
             // 生成增强字节码

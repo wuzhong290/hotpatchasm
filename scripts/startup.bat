@@ -1,3 +1,3 @@
-java -javaagent:hotpatchasm-1.0-SNAPSHOT.jar -cp test.jar agentTest.AgentTest
+java -javaagent:hotpatchasm-1.0-SNAPSHOT.jar -cp hotpatchasm-1.0-SNAPSHOT.jar agentTest.AgentTest
 
 pause

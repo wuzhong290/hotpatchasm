@@ -12,10 +12,10 @@ import org.objectweb.asm.commons.Method;
 /**
  * Created by wuzhong on 2017/11/2.
  */
-public class AdviceWeaver  extends ClassVisitor implements Opcodes {
+public class AdviceWeaverSimple extends ClassVisitor implements Opcodes {
     private final static Logger logger = Logger.getLogger(Enhancer.class);
 
-    public AdviceWeaver(final ClassVisitor cv){
+    public AdviceWeaverSimple(final ClassVisitor cv){
         super(ASM5, cv);
     }
 

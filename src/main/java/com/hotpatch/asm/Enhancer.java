@@ -30,7 +30,7 @@ public class Enhancer extends ClassLoader implements ClassFileTransformer {
             // 字节码增强
             ClassWriter cw=new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             // 生成增强字节码
-            cr.accept(new AdviceWeaver(cw), ClassReader.EXPAND_FRAMES);
+            cr.accept(new AdviceWeaverSimple(cw), ClassReader.EXPAND_FRAMES);
             byte[] enhanceClassByteArray = cw.toByteArray();
             if(null != enhanceClassByteArray){
                 Class<?> appClass=this.defineClass(null, enhanceClassByteArray, 0,enhanceClassByteArray.length);

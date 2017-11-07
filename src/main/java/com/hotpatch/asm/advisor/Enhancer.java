@@ -1,7 +1,9 @@
 package com.hotpatch.asm.advisor;
 
 import agentTest.TClass;
+import com.hotpatch.asm.textui.TTree;
 import com.hotpatch.asm.util.GaStringUtils;
+import com.hotpatch.asm.util.InvokeCost;
 import com.hotpatch.asm.util.affect.AsmAffect;
 import com.hotpatch.asm.util.affect.EnhancerAffect;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import java.security.ProtectionDomain;
 import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.hotpatch.asm.util.GaCheckUtils.isEquals;
 import static com.hotpatch.asm.util.GaReflectUtils.defineClass;
@@ -254,8 +257,132 @@ public class Enhancer implements ClassFileTransformer {
 
         return null;
     }
-
+    public static String tranClassName(String className) {
+        return StringUtils.replace(className, "/", ".");
+    }
+    public static String getThreadInfo() {
+        final Thread currentThread = Thread.currentThread();
+        return String.format("thread_name=\"%s\" thread_id=0x%s;is_daemon=%s;priority=%s;",
+                currentThread.getName(),
+                Long.toHexString(currentThread.getId()),
+                currentThread.isDaemon(),
+                currentThread.getPriority());
+    }
     private void adviceHook(ClassLoader inClassLoader) {
+        AdviceWeaver.reg(adviceId, new ReflectAdviceTracingListenerAdapter() {
+
+            private final AtomicInteger timesRef = new AtomicInteger();
+            private final InvokeCost invokeCost = new InvokeCost();
+            private final ThreadLocal<Trace> traceRef = new ThreadLocal<Trace>();
+
+            @Override
+            public void tracingInvokeBefore(
+                    Integer tracingLineNumber,
+                    String tracingClassName,
+                    String tracingMethodName,
+                    String tracingMethodDesc) throws Throwable {
+                final Trace trace = traceRef.get();
+                if (null == tracingLineNumber) {
+                    trace.tTree.begin(tranClassName(tracingClassName) + ":" + tracingMethodName + "()");
+                } else {
+                    trace.tTree.begin(tranClassName(tracingClassName) + ":" + tracingMethodName + "(@" + tracingLineNumber + ")");
+                }
+
+            }
+
+            @Override
+            public void tracingInvokeAfter(
+                    Integer tracingLineNumber,
+                    String tracingClassName,
+                    String tracingMethodName,
+                    String tracingMethodDesc) throws Throwable {
+                final Trace trace = traceRef.get();
+                if (!trace.tTree.isTop()) {
+                    trace.tTree.end();
+                }
+
+            }
+
+            @Override
+            public void tracingInvokeThrowing(
+                    Integer tracingLineNumber,
+                    String tracingClassName,
+                    String tracingMethodName,
+                    String tracingMethodDesc,
+                    String throwException) throws Throwable {
+                final Trace trace = traceRef.get();
+                if (!trace.tTree.isTop()) {
+                    trace.tTree.set(trace.tTree.get() + "[throw " + throwException + "]").end();
+                }
+
+            }
+
+            private String getTitle(final Advice advice) {
+                final StringBuilder titleSB = new StringBuilder("Tracing for : ")
+                        .append(getThreadInfo());
+                if (advice.isTraceSupport()) {
+                    titleSB.append(";traceId=").append(advice.getTraceId()).append(";");
+                }
+                return titleSB.toString();
+            }
+
+            @Override
+            public void before(Advice advice) throws Throwable {
+
+                invokeCost.begin();
+                traceRef.set(
+                        new Trace(
+                                new TTree(true, getTitle(advice))
+                                        .begin(advice.getClazz().getName() + ":" + advice.getMethod().getName() + "()")
+                        )
+                );
+            }
+
+            @Override
+            public void afterReturning(Advice advice) throws Throwable {
+                final Trace trace = traceRef.get();
+                if (!trace.tTree.isTop()) {
+                    trace.tTree.end();
+                }
+            }
+
+            @Override
+            public void afterThrowing(Advice advice) throws Throwable {
+                final Trace trace = traceRef.get();
+                trace.tTree.begin("throw:" + advice.throwExp.getClass().getName() + "()").end();
+                if (!trace.tTree.isTop()) {
+                    trace.tTree.end();
+                }
+
+                // 这里将堆栈的end全部补上
+                //while (entity.tracingDeep-- >= 0) {
+                //    entity.tTree.end();
+                //}
+
+            }
+
+            private boolean isInCondition(Advice advice, long cost) {
+                return false;
+            }
+
+            private boolean isOverThreshold(int currentTimes) {
+                return false;
+            }
+
+            @Override
+            public void afterFinishing(Advice advice) throws Throwable {
+                final long cost = invokeCost.cost();
+                if (isInCondition(advice, cost)) {
+                    final Trace trace = traceRef.get();
+                    System.out.println(trace.tTree.rendering());
+                    if (isOverThreshold(timesRef.incrementAndGet())) {
+                        //printer.finish();
+                    }
+                }
+            }
+
+        });
+
         // 获取各种Hook
         final Class<?> adviceWeaverClass;
         try {
@@ -511,5 +638,11 @@ public class Enhancer implements ClassFileTransformer {
         return affect;
 
     }
+    private class Trace {
+        private final TTree tTree;
 
+        private Trace(TTree tTree) {
+            this.tTree = tTree;
+        }
+    }
 }

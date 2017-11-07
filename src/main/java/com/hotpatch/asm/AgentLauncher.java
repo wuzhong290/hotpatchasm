@@ -1,5 +1,6 @@
 package com.hotpatch.asm;
 
+import com.hotpatch.asm.advisor.Enhancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +15,7 @@ public class AgentLauncher {
     public static void premain(String agentArgs, Instrumentation inst) {
 //        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
 //                new HotPatchASMThread(inst), 5, 50, TimeUnit.SECONDS);
-        inst.addTransformer(new Enhancer(), true);
+        inst.addTransformer(new EnhancerSimple(), true);
         logger.info("Agent Main Done");
     }
 }

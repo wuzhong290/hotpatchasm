@@ -15,7 +15,7 @@ public class HotPatchASMThread implements Runnable {
 	}
 
 	public void run() {
-		Enhancer enhancer = new Enhancer();
+		EnhancerSimple enhancer = new EnhancerSimple();
 		logger.info("run begin");
 		try {
 			inst.addTransformer(enhancer, true);

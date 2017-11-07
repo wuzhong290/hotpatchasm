@@ -14,8 +14,8 @@ import java.security.ProtectionDomain;
 /**
  * Created by wuzhong on 2017/11/2.
  */
-public class Enhancer extends ClassLoader implements ClassFileTransformer {
-    private static final Logger logger = LoggerFactory.getLogger(Enhancer.class);
+public class EnhancerSimple extends ClassLoader implements ClassFileTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(EnhancerSimple.class);
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
         logger.info("transform className:"+className);

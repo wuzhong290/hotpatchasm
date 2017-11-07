@@ -437,7 +437,6 @@ public class AdviceWeaver extends ClassVisitor implements Opcodes {
     private final boolean isTracing;
     private final String internalClassName;
     private final String javaClassName;
-    private final Matcher<AsmMethod> asmMethodMatcher;
     private final EnhancerAffect affect;
 
 
@@ -447,7 +446,6 @@ public class AdviceWeaver extends ClassVisitor implements Opcodes {
      * @param adviceId          通知ID
      * @param isTracing         可跟踪方法调用
      * @param internalClassName 类名称(透传)
-     * @param asmMethodMatcher  asm方法匹配
      *                          只有匹配上的方法才会被织入通知器
      * @param affect            影响计数
      * @param cv                ClassVisitor for ASM
@@ -456,7 +454,6 @@ public class AdviceWeaver extends ClassVisitor implements Opcodes {
             final int adviceId,
             final boolean isTracing,
             final String internalClassName,
-            final Matcher<AsmMethod> asmMethodMatcher,
             final EnhancerAffect affect,
             final ClassVisitor cv) {
         super(ASM5, cv);
@@ -464,7 +461,6 @@ public class AdviceWeaver extends ClassVisitor implements Opcodes {
         this.isTracing = isTracing;
         this.internalClassName = internalClassName;
         this.javaClassName = tranClassName(internalClassName);
-        this.asmMethodMatcher = asmMethodMatcher;
         this.affect = affect;
     }
 
@@ -482,7 +478,7 @@ public class AdviceWeaver extends ClassVisitor implements Opcodes {
     private boolean isIgnore(MethodVisitor mv, int access, String name, String desc) {
         return null == mv
                 || isAbstract(access)
-                || !asmMethodMatcher.matching(new AsmMethod(name, desc))
+                || isEquals(name, "<init>")
                 || isEquals(name, "<clinit>");
     }
 
@@ -519,7 +515,7 @@ public class AdviceWeaver extends ClassVisitor implements Opcodes {
 
 
             // -- KEY of ASM_TYPE or ASM_METHOD --
-            private final Type ASM_TYPE_SPY = Type.getType("Lcom/github/ompc/greys/agent/Spy;");
+            private final Type ASM_TYPE_SPY = Type.getType("Lcom/hotpatch/asm/advisor/Spy;");
             private final Type ASM_TYPE_OBJECT = Type.getType(Object.class);
             private final Type ASM_TYPE_OBJECT_ARRAY = Type.getType(Object[].class);
             private final Type ASM_TYPE_CLASS = Type.getType(Class.class);

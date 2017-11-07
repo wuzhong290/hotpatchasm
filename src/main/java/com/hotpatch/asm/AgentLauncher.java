@@ -15,6 +15,6 @@ public class AgentLauncher {
 //        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
 //                new HotPatchASMThread(inst), 5, 50, TimeUnit.SECONDS);
         inst.addTransformer(new Enhancer(), true);
-        System.out.println("Agent Main Done");
+        logger.info("Agent Main Done");
     }
 }

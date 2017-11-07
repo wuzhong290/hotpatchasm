@@ -1,6 +1,5 @@
 package com.hotpatch.asm;
 
-import com.hotpatch.asm.advisor.Enhancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

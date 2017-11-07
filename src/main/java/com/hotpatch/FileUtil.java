@@ -1,13 +1,14 @@
 package com.hotpatch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 /**
  * 读取指定目录所有文件
@@ -16,7 +17,7 @@ import org.apache.log4j.Logger;
  * 
  */
 public class FileUtil {
-	private final static Logger logger = Logger.getLogger(FileUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
 	/**
 	 * 读取指定目录中的所有文件

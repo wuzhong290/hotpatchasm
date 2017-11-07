@@ -1,9 +1,10 @@
 package com.hotpatch.asm;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
@@ -14,7 +15,7 @@ import java.security.ProtectionDomain;
  * Created by wuzhong on 2017/11/2.
  */
 public class Enhancer extends ClassLoader implements ClassFileTransformer {
-    private final static Logger logger = Logger.getLogger(Enhancer.class);
+    private static final Logger logger = LoggerFactory.getLogger(Enhancer.class);
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
         logger.info("transform className:"+className);

@@ -1,12 +1,13 @@
 package com.hotpatch.asm;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.instrument.Instrumentation;
 
 public class HotPatchASMThread implements Runnable {
 
-	private final static Logger logger = Logger.getLogger(HotPatchASMThread.class);
+	private static final Logger logger = LoggerFactory.getLogger(HotPatchASMThread.class);
 	private Instrumentation inst;
 
 	public HotPatchASMThread(Instrumentation inst) {

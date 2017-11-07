@@ -1,11 +1,12 @@
 package com.hotpatch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 /**
  * 热替换线程
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 public class HotPatchThread implements Runnable {
 
-	private final static Logger logger = Logger.getLogger(HotPatchThread.class);
+	private static final Logger logger = LoggerFactory.getLogger(HotPatchThread.class);
 	private Instrumentation inst;
 
 	public HotPatchThread(Instrumentation inst) {

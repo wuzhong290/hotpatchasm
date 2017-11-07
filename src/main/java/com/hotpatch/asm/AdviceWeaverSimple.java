@@ -1,6 +1,5 @@
 package com.hotpatch.asm;
 
-import org.apache.log4j.Logger;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -8,12 +7,14 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.AdviceAdapter;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
 import org.objectweb.asm.commons.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by wuzhong on 2017/11/2.
  */
 public class AdviceWeaverSimple extends ClassVisitor implements Opcodes {
-    private final static Logger logger = Logger.getLogger(Enhancer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdviceWeaverSimple.class);
 
     public AdviceWeaverSimple(final ClassVisitor cv){
         super(ASM5, cv);

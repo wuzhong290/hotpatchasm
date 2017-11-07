@@ -1,11 +1,12 @@
 package com.hotpatch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.lang.instrument.Instrumentation;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.log4j.Logger;
 
 /**
  * 热替换
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 public class HotPatch {
 
-	private final static Logger logger = Logger.getLogger(HotPatch.class);
+	private static final Logger logger = LoggerFactory.getLogger(HotPatch.class);
 
 	public static final String ROOT_PATH = "hotfiles";
 

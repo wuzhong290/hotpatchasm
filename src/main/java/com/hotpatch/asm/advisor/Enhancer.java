@@ -362,7 +362,7 @@ public class Enhancer implements ClassFileTransformer {
             }
 
             private boolean isInCondition(Advice advice, long cost) {
-                return false;
+                return true;
             }
 
             private boolean isOverThreshold(int currentTimes) {

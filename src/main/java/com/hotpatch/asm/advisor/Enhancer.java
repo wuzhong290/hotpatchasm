@@ -18,56 +18,6 @@ public class Enhancer extends ClassLoader implements ClassFileTransformer {
     private static final Logger logger = LoggerFactory.getLogger(Enhancer.class);
     final EnhancerAffect affect = new EnhancerAffect();
 
-    public Enhancer() {
-        // 获取各种Hook
-        final Class<?> adviceWeaverClass;
-        try {
-            adviceWeaverClass = this.loadClass("com.hotpatch.asm.advisor.AdviceWeaver");
-            // 初始化全局间谍
-            try {
-                Spy.initForAgentLauncher(
-                        this,
-                        adviceWeaverClass.getMethod("methodOnBegin",
-                                int.class,
-                                ClassLoader.class,
-                                String.class,
-                                String.class,
-                                String.class,
-                                Object.class,
-                                Object[].class),
-                        adviceWeaverClass.getMethod("methodOnReturnEnd",
-                                Object.class,
-                                int.class),
-                        adviceWeaverClass.getMethod("methodOnThrowingEnd",
-                                Throwable.class,
-                                int.class),
-                        adviceWeaverClass.getMethod("methodOnInvokeBeforeTracing",
-                                int.class,
-                                Integer.class,
-                                String.class,
-                                String.class,
-                                String.class),
-                        adviceWeaverClass.getMethod("methodOnInvokeAfterTracing",
-                                int.class,
-                                Integer.class,
-                                String.class,
-                                String.class,
-                                String.class),
-                        adviceWeaverClass.getMethod("methodOnInvokeThrowTracing",
-                                int.class,
-                                Integer.class,
-                                String.class,
-                                String.class,
-                                String.class,
-                                String.class));
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
         logger.info("transform className:"+className);
@@ -83,7 +33,7 @@ public class Enhancer extends ClassLoader implements ClassFileTransformer {
             // 字节码增强
             ClassWriter cw=new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             // 生成增强字节码
-            cr.accept(new AdviceWeaver(1,true, null, affect, cw), ClassReader.EXPAND_FRAMES);
+            cr.accept(new AdviceWeaver(1,true, cr.getClassName(), affect, cw), ClassReader.EXPAND_FRAMES);
             byte[] enhanceClassByteArray = cw.toByteArray();
             if(null != enhanceClassByteArray){
                 logger.info("enhanceClassByteArray size:{}", enhanceClassByteArray.length);

@@ -3,7 +3,6 @@ package com.hotpatch.asm.advisor;
 import com.hotpatch.asm.util.AsmCodeLock;
 import com.hotpatch.asm.util.CodeLock;
 import com.hotpatch.asm.util.GaMethod;
-import com.hotpatch.asm.util.LogUtil;
 import com.hotpatch.asm.util.affect.EnhancerAffect;
 import com.hotpatch.asm.util.collection.GaStack;
 import com.hotpatch.asm.util.collection.ThreadUnsafeFixGaStack;
@@ -15,6 +14,7 @@ import org.objectweb.asm.commons.AdviceAdapter;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
 import org.objectweb.asm.commons.Method;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,7 +108,7 @@ class AsmTryCatchBlock {
  */
 public class AdviceWeaver extends ClassVisitor implements Opcodes {
 
-    private final static Logger logger = LogUtil.getLogger();
+    private static final Logger logger = LoggerFactory.getLogger(Enhancer.class);
 
     // 线程帧栈堆栈大小
     private final static int FRAME_STACK_SIZE = 7;
@@ -435,7 +435,6 @@ public class AdviceWeaver extends ClassVisitor implements Opcodes {
 
     private final int adviceId;
     private final boolean isTracing;
-    private final String internalClassName;
     private final String javaClassName;
     private final EnhancerAffect affect;
 
@@ -459,7 +458,6 @@ public class AdviceWeaver extends ClassVisitor implements Opcodes {
         super(ASM5, cv);
         this.adviceId = adviceId;
         this.isTracing = isTracing;
-        this.internalClassName = internalClassName;
         this.javaClassName = tranClassName(internalClassName);
         this.affect = affect;
     }

@@ -68,7 +68,7 @@ public class GlobalOptions {
             summary = "Option to print DEBUG message if ASM is involved",
             description = "This option enables to print DEBUG message of ASM for each method invocation."
     )
-    public static volatile boolean isDebugForAsm = false;
+    public static volatile boolean isDebugForAsm = true;
 
     @Option(
             level = 1,

@@ -32,7 +32,7 @@ public class GaStringUtils {
     /**
      * Spy类名
      */
-    public static final String SPY_CLASSNAME = "com.github.ompc.greys.agent.Spy";
+    public static final String SPY_CLASSNAME = "com.hotpatch.asm.advisor.Spy";
 
     /**
      * 解析状态
